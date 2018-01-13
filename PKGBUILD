@@ -153,7 +153,7 @@ package_sun8i-h3-dt-overlays() {
   install -Dm644 "${srcdir}/overlays.txt" "${pkgdir}/boot/overlays.txt"
 
   cd "${srcdir}/sunxi-dto"
-  install -Dm644 'sun8i-h3/sun8i-h3-fixup.scr' "${pkgdir}/boot/dtbs/allwinner/overlay/sun8i-h3-fixup.scr"
+  install -Dm644 'sun8i-h3/sun8i-h3-fixup.scr' "${pkgdir}/boot/dtbs/overlay/sun8i-h3-fixup.scr"
 }
 
 _install_dtbo() {
