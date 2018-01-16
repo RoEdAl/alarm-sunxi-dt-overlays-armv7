@@ -52,7 +52,7 @@ pkgname=(
 	"${_dto_packages[@]/#/sun8i-h3-dto-}")
 pkgdesc='Device Tree overlays for sunxi devices'
 pkgver=r54.4dfd904
-pkgrel=1
+pkgrel=2
 arch=('armv7h')
 _linux_kernel_pkg='linux-armv7-rc'
 url='http://github.com/armbian/sunxi-DT-overlays'
@@ -62,9 +62,11 @@ options=('!strip')
 
 source=('sunxi-dto::git+https://github.com/armbian/sunxi-DT-overlays.git'
 	'overlays.txt'
+	'params'
 )
 md5sums=('SKIP'
-         'd830ed89e377a18f426b81b287bc15bd')
+         'd830ed89e377a18f426b81b287bc15bd'
+         '9db5171614f4c8b51959cfce5f8e2008')
 
 pkgver() {
   cd "${srcdir}/sunxi-dto"
@@ -125,14 +127,14 @@ package_sun8i-h3-dt-overlays() {
   pkgdesc='DT overlays for Allwinner H2+/H3 SoC'
   depends=($_linux_kernel_pkg 'sunxi-dt-overlays-toolkit')
 
-  OLD_IFS=${IFS}
+  local OLD_IFS=${IFS}
   IFS=$'\n'
   local _optdepends=( $(_get_dto_packages_with_desc) )
   IFS=${OLD_IFS}
   optdepends=( "${_optdepends[@]}" )
 
   groups=('sun8i-h3-dto')
-  backup=('boot/overlays.txt')
+  backup=('boot/overlays.txt' 'etc/conf.d/sun8i-h3')
   provides=('sunxi-dt-overlays')
   conflicts=('sunxi-dt-overlays')
  
@@ -142,6 +144,8 @@ package_sun8i-h3-dt-overlays() {
   install -dm755 "${pkgdir}/usr/share/libalpm/hooks"
   _create_ovl_hook 'sun8i-h3' 'Allwinner H2+/H3' "${pkgdir}"
   install -Dm644 "${srcdir}/overlays.txt" "${pkgdir}/boot/overlays.txt"
+
+  install -Dm644 "${srcdir}/params" "${pkgdir}/etc/conf.d/sun8i-h3"
 
   cd "${srcdir}/sunxi-dto"
   install -Dm644 'sun8i-h3/sun8i-h3-fixup.scr' "${pkgdir}/boot/dtbs/overlay/sun8i-h3-fixup.scr"
