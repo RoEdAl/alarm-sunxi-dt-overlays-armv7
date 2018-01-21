@@ -51,8 +51,8 @@ pkgname=(
 	'sun8i-h3-dt-overlays'
 	"${_dto_packages[@]/#/sun8i-h3-dto-}")
 pkgdesc='Device Tree overlays for sunxi devices'
-pkgver=r54.4dfd904
-pkgrel=2
+pkgver=r55.ede1d1c
+pkgrel=1
 arch=('armv7h')
 _linux_kernel_pkg='linux-armv7-rc'
 url='http://github.com/armbian/sunxi-DT-overlays'
@@ -60,7 +60,7 @@ license=('GPL2')
 makedepends=('git' 'dtc' 'uboot-tools')
 options=('!strip')
 
-source=('sunxi-dto::git+https://github.com/armbian/sunxi-DT-overlays.git'
+source=('sunxi-dto::git+https://github.com/RoEdAl/sunxi-DT-overlays.git#branch=linux-v4.15'
 	'overlays.txt'
 	'params'
 )
