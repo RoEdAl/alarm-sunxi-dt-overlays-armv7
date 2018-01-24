@@ -174,7 +174,7 @@ _get_sun8i_h3_dto_packages_with_desc() {
   done
 }
 
-_get_sun8i_h3_dto_packages_with_desc() {
+_get_sun4i_a10_dto_packages_with_desc() {
   for (( i = 0 ; i < ${#_sun4i_a10_dto_packages[@]} ; i++ ))
   do
     echo "sun4i-a10-dto-${_sun4i_a10_dto_packages[$i]}: ${_sun4i_a10_dto_packages_desc[$i]}"
