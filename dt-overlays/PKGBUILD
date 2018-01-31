@@ -100,9 +100,9 @@ pkgname=(
 	"${_sun4i_a10_dto_packages[@]/#/sun4i-a10-dto-}")
 pkgdesc='Device Tree overlays for sunxi devices'
 pkgver=r56.efb607b
-pkgrel=1
+pkgrel=2
 arch=('armv7h')
-_linux_kernel_pkg='linux-armv7-rc'
+_linux_kernel_pkg='linux>=4.15.0'
 url='http://github.com/armbian/sunxi-DT-overlays'
 license=('GPL2')
 makedepends=('git' 'dtc' 'uboot-tools')
