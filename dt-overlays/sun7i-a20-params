@@ -1,0 +1,32 @@
+#
+# Paramteters description at:
+# http://github.com/armbian/sunxi-DT-overlays/tree/master/sun7i-a20
+#
+# <mmc2>
+#param_mmc2_cd_pin=PH0
+#param_mmc2_non_removable=0
+# <pps-gpio>
+#param_pps_pin=PI15
+#param_pps_falling_edge=0
+# <pwm>
+#param_pwm_pins=both
+# <spi2>
+#param_spi2_bus_pins=a
+# <spi-jedec-nor>
+#param_spinor_spi_bus=0
+#param_spinor_spi_cs=0
+#param_spinor_max_freq=1000000
+# <spi-spidev>
+#param_spidev_spi_bus=0
+#param_spidev_spi_cs=0
+#param_spidev_max_freq=1000000
+# <uart2>
+#param_uart2_rtscts=0
+# <uart3>
+#param_uart3_pins=a
+#param_uart3_rtscts=0
+# <uart4>
+#param_uart4_pins=a
+# <w1-gpio>
+#param_w1_pin=PI15
+#param_w1_pin_int_pullup=0

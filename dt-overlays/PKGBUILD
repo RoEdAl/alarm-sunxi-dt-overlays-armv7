@@ -92,15 +92,74 @@ _sun4i_a10_dto_packages_desc=(
 	'1-Wire GPIO master'
 )
 
+_sun7i_a20_dto_packages=(
+	'analog-codec'
+	'can'
+	'i2c1'
+	'i2c2'
+	'i2c3'
+	'i2c4'
+	'i2s0'
+	'i2s1'
+	'mmc2'
+	'nand'
+	'pps-gpio'
+	'pwm'
+	'spdif-out'
+	'spi-add-cs1'
+	'spi-jedec-nor'
+	'spi-spidev'
+	'spi0'
+	'spi1'
+	'spi2'
+	'uart2'
+	'uart3'
+	'uart4'
+	'uart5'
+	'uart6'
+	'uart7'
+	'w1-gpio'
+)
+
+_sun7i_a20_dto_packages_desc=(
+	'analog codec'
+	'CAN controller'
+	'TWI/I2C bus 1'
+	'TWI/I2C bus 2'
+	'TWI/I2C bus 3'
+	'TWI/I2C bus 4'
+	'I2S controller 0'
+	'I2S controller 1'
+	'SD/MMC controller 2'
+	'NAND controller'
+	'pulse-per-second GPIO client'
+	'hardware PWM controller'
+	'SPDiF/Toslink audio output'
+	'SPI controller 0'
+	'SPI controller 1'
+	'SPI controller 2'
+	'SPI chip select 1 on SPI controller 0'
+	'MTD support for JEDEC compatible SPI NOR flash'
+	'SPIdev device node (/dev/spidevX.Y) for userspace SPI access'
+	'serial port 2'
+	'serial port 3'
+	'serial port 4'
+	'serial port 5'
+	'serial port 6'
+	'serial port 7'
+	'1-Wire GPIO master'
+)
+
 pkgbase='sunxi-dt-overlays'
 pkgname=(
 	'sun8i-h3-dt-overlays'
 	'sun4i-a10-dt-overlays'
 	"${_sun8i_h3_dto_packages[@]/#/sun8i-h3-dto-}"
-	"${_sun4i_a10_dto_packages[@]/#/sun4i-a10-dto-}")
+	"${_sun4i_a10_dto_packages[@]/#/sun4i-a10-dto-}"
+	"${_sun7i_a20_dto_packages[@]/#/sun7i-a20-dto-}")
 pkgdesc='Device Tree overlays for sunxi devices'
-pkgver=r56.efb607b
-pkgrel=2
+pkgver=r57.b549a13
+pkgrel=1
 arch=('armv7h')
 _linux_kernel_pkg='linux>=4.15.0'
 url='http://github.com/armbian/sunxi-DT-overlays'
@@ -109,14 +168,16 @@ makedepends=('git' 'dtc' 'uboot-tools')
 options=('!strip')
 
 source=('sunxi-dto::git+https://github.com/RoEdAl/sunxi-DT-overlays.git#branch=linux-v4.15'
-	'sun8i-h3-overlays.txt' 'sun4i-a10-overlays.txt'
-	'sun8i-h3-params' 'sun4i-a10-params'
+	'sun8i-h3-overlays.txt' 'sun4i-a10-overlays.txt' 'sun7i-a20-overlays.txt'
+	'sun8i-h3-params' 'sun4i-a10-params' 'sun7i-a20-params'
 )
 md5sums=('SKIP'
          'd830ed89e377a18f426b81b287bc15bd'
          '12c11a5a6f38e1c2ef07562e452bf042'
+         'b51d0efc4d27be871c4ac79946fcbef5'
          '9db5171614f4c8b51959cfce5f8e2008'
-         '223a48010b1d56cb625e799554f3afb3')
+         '223a48010b1d56cb625e799554f3afb3'
+         '6c38a396bfe45b2af1ae94e5cc4c8113')
 
 pkgver() {
   cd "${srcdir}/sunxi-dto"
@@ -142,6 +203,7 @@ build() {
 
   _build_dtbo 'sun8i-h3' 'Allwinner H2+/H3' "${_sun8i_h3_dto_packages[@]}"
   _build_dtbo 'sun4i-a10' 'Allwinner A10' "${_sun4i_a10_dto_packages[@]}"
+  _build_dtbo 'sun7i-a20' 'Allwinner A20' "${_sun7i_a20_dto_packages[@]}"
 }
 
 # hook template
@@ -178,6 +240,13 @@ _get_sun4i_a10_dto_packages_with_desc() {
   for (( i = 0 ; i < ${#_sun4i_a10_dto_packages[@]} ; i++ ))
   do
     echo "sun4i-a10-dto-${_sun4i_a10_dto_packages[$i]}: ${_sun4i_a10_dto_packages_desc[$i]}"
+  done
+}
+
+_get_sun7i_a20_dto_packages_with_desc() {
+  for (( i = 0 ; i < ${#_sun7i_a20_dto_packages[@]} ; i++ ))
+  do
+    echo "sun7i-a20-dto-${_sun7i_a20_dto_packages[$i]}: ${_sun7i_a20_dto_packages_desc[$i]}"
   done
 }
 
@@ -238,6 +307,35 @@ package_sun4i-a10-dt-overlays() {
 
 }
 
+package_sun7i-a20-dt-overlays() {
+  pkgdesc='DT overlays for Allwinner A20 SoC'
+  depends=($_linux_kernel_pkg 'sunxi-dt-overlays-toolkit')
+
+  local OLD_IFS=${IFS}
+  IFS=$'\n'
+  local _optdepends=( $(_get_sun7i_a20_dto_packages_with_desc) )
+  IFS=${OLD_IFS}
+  optdepends=( "${_optdepends[@]}" )
+
+  groups=('sun7i-a20-dto')
+  backup=('boot/overlays.txt' 'etc/conf.d/sun7i-a20')
+  provides=('sunxi-dt-overlays')
+  conflicts=('sunxi-dt-overlays')
+
+  install -dm755 ${pkgdir}/usr/bin
+  ln -s /usr/share/sunxi-dt-overlays/upd-sunxi-dt-overlays.sh ${pkgdir}/usr/bin/upd-sun7i-a20-dt-overlays
+
+  install -dm755 "${pkgdir}/usr/share/libalpm/hooks"
+  _create_ovl_hook 'sun7i-a20' 'Allwinner A20' "${pkgdir}"
+  install -Dm644 "${srcdir}/sun7i-a20-overlays.txt" "${pkgdir}/boot/overlays.txt"
+
+  install -Dm644 "${srcdir}/sun7i-a20-params" "${pkgdir}/etc/conf.d/sun7i-a20"
+
+  cd "${srcdir}/sunxi-dto"
+  install -Dm644 'sun7i-a20/sun7i-a20-fixup.scr' "${pkgdir}/boot/dtbs/overlay/sun7i-a20-fixup.scr"
+
+}
+
 _install_dtbo() {
   local PFX=$1
   shift
@@ -263,6 +361,17 @@ _get_sun4i_a10_package_desc() {
   do
     if [[ ${_sun4i_a10_dto_packages[$i]} == $1 ]]; then
       echo "Device Tree overlay for Allwinner A10 SoC - ${_sun4i_a10_dto_packages_desc[$i]}"
+      return 0
+    fi
+  done
+  return 1
+}
+
+_get_sun7i_a20_package_desc() {
+  for (( i = 0 ; i < ${#_sun7i_a20_dto_packages[@]} ; i++ ))
+  do
+    if [[ ${_sun7i_a20_dto_packages[$i]} == $1 ]]; then
+      echo "Device Tree overlay for Allwinner A20 SoC - ${_sun7i_a20_dto_packages_desc[$i]}"
       return 0
     fi
   done
@@ -583,4 +692,214 @@ package_sun4i-a10-dto-w1-gpio() {
   depends=('sun4i-a10-dt-overlays')
 
    _install_dtbo 'sun4i-a10' 'w1-gpio'
+}
+
+# sun7i-a20
+
+package_sun7i-a20-dto-analog-codec() {
+  pkgdesc="$(_get_sun7i_a20_package_desc analog-codec)"
+  groups=('sun7i-a20-dto')
+  depends=('sun7i-a20-dt-overlays')
+
+   _install_dtbo 'sun7i-a20' 'analog-codec'
+}
+
+package_sun7i-a20-dto-can() {
+  pkgdesc="$(_get_sun7i_a20_package_desc can)"
+  groups=('sun7i-a20-dto')
+  depends=('sun7i-a20-dt-overlays')
+
+   _install_dtbo 'sun7i-a20' 'can'
+}
+
+package_sun7i-a20-dto-i2c1() {
+  pkgdesc="$(_get_sun7i_a20_package_desc i2c1)"
+  groups=('sun7i-a20-dto')
+  depends=('sun7i-a20-dt-overlays')
+
+   _install_dtbo 'sun7i-a20' 'i2c1'
+}
+
+package_sun7i-a20-dto-i2c2() {
+  pkgdesc="$(_get_sun7i_a20_package_desc i2c2)"
+  groups=('sun7i-a20-dto')
+  depends=('sun7i-a20-dt-overlays')
+
+   _install_dtbo 'sun7i-a20' 'i2c2'
+}
+
+package_sun7i-a20-dto-i2c3() {
+  pkgdesc="$(_get_sun7i_a20_package_desc i2c3)"
+  groups=('sun7i-a20-dto')
+  depends=('sun7i-a20-dt-overlays')
+
+   _install_dtbo 'sun7i-a20' 'i2c3'
+}
+
+package_sun7i-a20-dto-i2c4() {
+  pkgdesc="$(_get_sun7i_a20_package_desc i2c4)"
+  groups=('sun7i-a20-dto')
+  depends=('sun7i-a20-dt-overlays')
+
+   _install_dtbo 'sun7i-a20' 'i2c4'
+}
+
+package_sun7i-a20-dto-i2s0() {
+  pkgdesc="$(_get_sun7i_a20_package_desc i2s0)"
+  groups=('sun7i-a20-dto')
+  depends=('sun7i-a20-dt-overlays')
+
+   _install_dtbo 'sun7i-a20' 'i2s0'
+}
+
+package_sun7i-a20-dto-i2s1() {
+  pkgdesc="$(_get_sun7i_a20_package_desc i2s1)"
+  groups=('sun7i-a20-dto')
+  depends=('sun7i-a20-dt-overlays')
+
+   _install_dtbo 'sun7i-a20' 'i2s1'
+}
+
+package_sun7i-a20-dto-mmc2() {
+  pkgdesc="$(_get_sun7i_a20_package_desc mmc2)"
+  groups=('sun7i-a20-dto')
+  depends=('sun7i-a20-dt-overlays')
+
+   _install_dtbo 'sun7i-a20' 'mmc2'
+}
+
+package_sun7i-a20-dto-nand() {
+  pkgdesc="$(_get_sun7i_a20_package_desc nand)"
+  groups=('sun7i-a20-dto')
+  depends=('sun7i-a20-dt-overlays')
+
+   _install_dtbo 'sun7i-a20' 'nand'
+}
+
+package_sun7i-a20-dto-pps-gpio() {
+  pkgdesc="$(_get_sun7i_a20_package_desc pps-gpio)"
+  groups=('sun7i-a20-dto')
+  depends=('sun7i-a20-dt-overlays')
+
+   _install_dtbo 'sun7i-a20' 'pps-gpio'
+}
+
+package_sun7i-a20-dto-pwm() {
+  pkgdesc="$(_get_sun7i_a20_package_desc pwm)"
+  groups=('sun7i-a20-dto')
+  depends=('sun7i-a20-dt-overlays')
+
+   _install_dtbo 'sun7i-a20' 'pwm'
+}
+
+package_sun7i-a20-dto-spdif-out() {
+  pkgdesc="$(_get_sun7i_a20_package_desc spdif-out)"
+  groups=('sun7i-a20-dto')
+  depends=('sun7i-a20-dt-overlays')
+
+   _install_dtbo 'sun7i-a20' 'spdif-out'
+}
+
+package_sun7i-a20-dto-spi-add-cs1() {
+  pkgdesc="$(_get_sun7i_a20_package_desc spi-add-cs1)"
+  groups=('sun7i-a20-dto')
+  depends=('sun7i-a20-dt-overlays')
+
+   _install_dtbo 'sun7i-a20' 'spi-add-cs1'
+}
+
+package_sun7i-a20-dto-spi-jedec-nor() {
+  pkgdesc="$(_get_sun7i_a20_package_desc spi-jedec-nor)"
+  groups=('sun7i-a20-dto')
+  depends=('sun7i-a20-dt-overlays')
+
+   _install_dtbo 'sun7i-a20' 'spi-jedec-nor'
+}
+
+package_sun7i-a20-dto-spi-spidev() {
+  pkgdesc="$(_get_sun7i_a20_package_desc spi-spidev)"
+  groups=('sun7i-a20-dto')
+  depends=('sun7i-a20-dt-overlays')
+
+   _install_dtbo 'sun7i-a20' 'spi-spidev'
+}
+
+package_sun7i-a20-dto-spi0() {
+  pkgdesc="$(_get_sun7i_a20_package_desc spi0)"
+  groups=('sun7i-a20-dto')
+  depends=('sun7i-a20-dt-overlays')
+
+   _install_dtbo 'sun7i-a20' 'spi0'
+}
+
+package_sun7i-a20-dto-spi1() {
+  pkgdesc="$(_get_sun7i_a20_package_desc spi1)"
+  groups=('sun7i-a20-dto')
+  depends=('sun7i-a20-dt-overlays')
+
+   _install_dtbo 'sun7i-a20' 'spi1'
+}
+
+package_sun7i-a20-dto-spi2() {
+  pkgdesc="$(_get_sun7i_a20_package_desc spi2)"
+  groups=('sun7i-a20-dto')
+  depends=('sun7i-a20-dt-overlays')
+
+   _install_dtbo 'sun7i-a20' 'spi2'
+}
+
+package_sun7i-a20-dto-uart2() {
+  pkgdesc="$(_get_sun7i_a20_package_desc uart2)"
+  groups=('sun7i-a20-dto')
+  depends=('sun7i-a20-dt-overlays')
+
+   _install_dtbo 'sun7i-a20' 'uart2'
+}
+
+package_sun7i-a20-dto-uart3() {
+  pkgdesc="$(_get_sun7i_a20_package_desc uart3)"
+  groups=('sun7i-a20-dto')
+  depends=('sun7i-a20-dt-overlays')
+
+   _install_dtbo 'sun7i-a20' 'uart3'
+}
+
+package_sun7i-a20-dto-uart4() {
+  pkgdesc="$(_get_sun7i_a20_package_desc uart4)"
+  groups=('sun7i-a20-dto')
+  depends=('sun7i-a20-dt-overlays')
+
+   _install_dtbo 'sun7i-a20' 'uart4'
+}
+
+package_sun7i-a20-dto-uart5() {
+  pkgdesc="$(_get_sun7i_a20_package_desc uart5)"
+  groups=('sun7i-a20-dto')
+  depends=('sun7i-a20-dt-overlays')
+
+   _install_dtbo 'sun7i-a20' 'uart5'
+}
+
+package_sun7i-a20-dto-uart6() {
+  pkgdesc="$(_get_sun7i_a20_package_desc uart6)"
+  groups=('sun7i-a20-dto')
+  depends=('sun7i-a20-dt-overlays')
+
+   _install_dtbo 'sun7i-a20' 'uart6'
+}
+
+package_sun7i-a20-dto-uart7() {
+  pkgdesc="$(_get_sun7i_a20_package_desc uart7)"
+  groups=('sun7i-a20-dto')
+  depends=('sun7i-a20-dt-overlays')
+
+   _install_dtbo 'sun7i-a20' 'uart7'
+}
+
+package_sun7i-a20-dto-w1-gpio() {
+  pkgdesc="$(_get_sun7i_a20_package_desc w1-gpio)"
+  groups=('sun7i-a20-dto')
+  depends=('sun7i-a20-dt-overlays')
+
+   _install_dtbo 'sun7i-a20' 'w1-gpio'
 }
