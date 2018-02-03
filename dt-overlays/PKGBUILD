@@ -154,6 +154,7 @@ pkgbase='sunxi-dt-overlays'
 pkgname=(
 	'sun8i-h3-dt-overlays'
 	'sun4i-a10-dt-overlays'
+	'sun7i-a20-dt-overlays'
 	"${_sun8i_h3_dto_packages[@]/#/sun8i-h3-dto-}"
 	"${_sun4i_a10_dto_packages[@]/#/sun4i-a10-dto-}"
 	"${_sun7i_a20_dto_packages[@]/#/sun7i-a20-dto-}")
