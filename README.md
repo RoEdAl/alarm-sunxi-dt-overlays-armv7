@@ -8,7 +8,7 @@ To enable, say additional USB port just install `sun8i-h3-dto-usbport2` package 
 If you want audio codec just install `sun8i-h3-dto-analog-codec` package and reboot etc.
 The `/boot/overlays.txt` config file is updated by simple post-install hook (shell script).
 
-See [boot.txt](http://github.com/RoEdAl/alarm-sun8i-h3/blob/master/uboot/boot.txt) U-Boot script.
+See [boot.txt](//github.com/RoEdAl/alarm-sun8i-h3/blob/master/uboot/boot.txt) U-Boot script.
 
 ## Supported SoCs:
 
