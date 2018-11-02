@@ -22,6 +22,7 @@ _sun8i_h3_dto_packages=(
 	'spi-add-cs1'
 	'spi-jedec-nor'
 	'spi-spidev'
+	'emac'
 )
 
 _sun8i_h3_dto_packages_desc=(
@@ -44,6 +45,7 @@ _sun8i_h3_dto_packages_desc=(
 	'SPI chip select 1 with GPIO'
 	'MTD support for JEDEC compatible SPI NOR flash'
 	'SPIdev device node (/dev/spidevX.Y) for userspace SPI access'
+	'on-board ethernet adapter'
 )
 
 _sun4i_a10_dto_packages=(
@@ -159,7 +161,7 @@ pkgname=(
 	"${_sun4i_a10_dto_packages[@]/#/sun4i-a10-dto-}"
 	"${_sun7i_a20_dto_packages[@]/#/sun7i-a20-dto-}")
 pkgdesc='Device Tree overlays for sunxi devices'
-pkgver=r57.b549a13
+pkgver=r62.99e8203
 pkgrel=1
 arch=('armv7h')
 _linux_kernel_pkg='linux>=4.15.0'
@@ -531,6 +533,14 @@ package_sun8i-h3-dto-spi-add-cs1() {
   depends=('sun8i-h3-dt-overlays')
 
    _install_dtbo 'sun8i-h3' 'spi-add-cs1'
+}
+
+package_sun8i-h3-dto-emac() {
+  pkgdesc="$(_get_sun8i_h3_package_desc emac)"
+  groups=('sun8i-h3-dto')
+  depends=('sun8i-h3-dt-overlays')
+
+   _install_dtbo 'sun8i-h3' 'emac'
 }
 
 # sun4i-a10
